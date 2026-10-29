@@ -250,6 +250,15 @@ export function SavedAnalysesSection({ onLoadSavedReport, refreshTrigger }) {
             <p style={{ color: 'var(--color-text-secondary)', maxWidth: '520px', margin: '0 auto var(--space-4)' }}>
               Run a privacy audit in the Analyzer Studio above, then click <strong>&ldquo;Save to Database&rdquo;</strong> in the Results Dashboard to preserve an audit snapshot here.
             </p>
+            <div style={{ marginBottom: 'var(--space-4)' }}>
+              <a href="#analyzer" className="btn btn-primary btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <span>Analyze a Policy Now</span>
+              </a>
+            </div>
             <div className="privacy-disclosure-tagline" style={{ fontSize: '0.825rem', color: 'var(--color-text-muted)' }}>
               🔒 <strong>Privacy Guarantee:</strong> Analyses are saved only upon explicit user consent and scoped to your anonymous client token. Raw policy texts are never stored.
             </div>

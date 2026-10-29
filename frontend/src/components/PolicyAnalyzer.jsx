@@ -52,6 +52,11 @@ export const PolicyAnalyzer = forwardRef(function PolicyAnalyzer(
   };
 
   const handleClear = () => {
+    if (policyText && policyText.length > 200) {
+      if (!window.confirm('Are you sure you want to clear the policy text? Your entered agreement will be removed.')) {
+        return;
+      }
+    }
     onClearText();
     setValidationState({
       type: null,
@@ -121,7 +126,7 @@ export const PolicyAnalyzer = forwardRef(function PolicyAnalyzer(
             Analyze a Privacy Policy
           </h2>
           <p className="section-subtitle">
-            Paste any digital agreement, terms of service, or cookie disclosure below. PrivacyLens examines the text in your browser to reveal what you are agreeing to.
+            PrivacyLens evaluates the wording of any privacy agreement or terms of service against 28 deterministic pattern-matching rules. Results reflect disclosures detected in the supplied text, not independently verified company behavior.
           </p>
         </div>
 
@@ -179,6 +184,9 @@ export const PolicyAnalyzer = forwardRef(function PolicyAnalyzer(
 
           {/* Main Textarea Input */}
           <div className="studio-editor-wrapper">
+            <label htmlFor="policy-textarea" className="visually-hidden">
+              Privacy Policy Text Input
+            </label>
             <textarea
               id="policy-textarea"
               ref={ref}
@@ -230,7 +238,7 @@ export const PolicyAnalyzer = forwardRef(function PolicyAnalyzer(
                 type="button"
                 className="btn btn-primary btn-lg studio-btn-analyze"
                 onClick={handleAnalyzeClick}
-                disabled={isAnalyzing}
+                disabled={isAnalyzing || !policyText || !policyText.trim() || isError}
                 id="btn-analyze-policy"
               >
                 {isAnalyzing ? (
@@ -265,29 +273,19 @@ export const PolicyAnalyzer = forwardRef(function PolicyAnalyzer(
                       <circle cx="11" cy="11" r="8" />
                       <line x1="21" y1="21" x2="16.65" y2="16.65" />
                     </svg>
-                    <span>Run Deterministic Analysis</span>
+                    <span>Analyze Privacy Policy</span>
                   </>
                 )}
               </button>
             </div>
           </div>
 
-          {/* In-Progress Pipeline Feedback during analysis */}
+          {/* Real-time In-Progress Indicator during analysis */}
           {isAnalyzing && (
             <div className="analysis-progress-panel" role="status" aria-live="polite">
-              <div className="progress-steps-list">
-                <div className="progress-step-item active">
-                  <span className="step-spinner" />
-                  <span>Normalizing text &amp; segmenting clauses...</span>
-                </div>
-                <div className="progress-step-item active">
-                  <span className="step-spinner" />
-                  <span>Matching 28 deterministic regex patterns across 5 categories...</span>
-                </div>
-                <div className="progress-step-item active">
-                  <span className="step-spinner" />
-                  <span>Slicing verbatim evidence character offsets...</span>
-                </div>
+              <div className="progress-status-indicator">
+                <span className="step-spinner" aria-hidden="true" />
+                <span>Evaluating document against 28 deterministic pattern-matching rules across 5 categories...</span>
               </div>
             </div>
           )}

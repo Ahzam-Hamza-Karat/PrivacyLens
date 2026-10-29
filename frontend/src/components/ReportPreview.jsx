@@ -4,6 +4,40 @@ import { getClientRuleExplanation } from '../utils/explanationCatalogue';
 import { explainFindingWithAi, saveAnalysisReport } from '../services/api';
 import PrivacyAnalysisDoughnutChart from './PrivacyAnalysisDoughnutChart';
 
+// Five standard privacy evaluation domains
+const PRIVACY_DOMAINS_OVERVIEW = [
+  {
+    id: 'collection',
+    name: 'Data Collection',
+    rulesCount: 7,
+    scope: 'Contact details, credentials, payment info, automated telemetry, and GPS location.',
+  },
+  {
+    id: 'sharing',
+    name: 'Data Sharing',
+    rulesCount: 6,
+    scope: 'Third-party vendors, corporate affiliates, legal compliance, and non-selling pledges.',
+  },
+  {
+    id: 'cookies',
+    name: 'Cookies & Tracking',
+    rulesCount: 5,
+    scope: 'First-party session cookies, tracking pixels, analytics, and browser opt-out controls.',
+  },
+  {
+    id: 'retention',
+    name: 'Data Retention',
+    rulesCount: 4,
+    scope: 'Duration commitments, account closure deletion, vague terms, and legal exceptions.',
+  },
+  {
+    id: 'rights',
+    name: 'User Rights & Redress',
+    rulesCount: 6,
+    scope: 'Access requests, data rectification, erasure rights, marketing opt-out, and portability.',
+  },
+];
+
 /**
  * Redesigned Results Command Center Dashboard for PrivacyLens
  * Provides a structured analysis dashboard with outcome metrics, doughnut chart,
@@ -121,33 +155,67 @@ export function ReportPreview({ analysisReport, policyText, isStale, onReanalyze
     }
   };
 
-  // State 1: Awaiting Document Analysis (Clean Compact Empty State)
+  // State 1: Awaiting Document Analysis (Clean Professional Pre-Scan Overview)
   if (!analysisReport) {
     return (
       <section id="preview" className="content-section" aria-labelledby="preview-title">
         <div className="app-container">
           <div className="awaiting-analysis-compact-card">
-            <div className="awaiting-compact-icon" aria-hidden="true">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="11" cy="11" r="8" />
-                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                <line x1="11" y1="8" x2="11" y2="14" />
-                <line x1="8" y1="11" x2="14" y2="11" />
-              </svg>
+            <div className="awaiting-header-bar">
+              <div className="awaiting-compact-icon" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  <line x1="11" y1="8" x2="11" y2="14" />
+                  <line x1="8" y1="11" x2="14" y2="11" />
+                </svg>
+              </div>
+              <div className="awaiting-compact-content">
+                <h3 id="preview-title" className="awaiting-compact-title">
+                  Analysis Results &amp; Findings Dashboard
+                </h3>
+                <p className="awaiting-compact-desc">
+                  When you submit a policy, PrivacyLens evaluates its exact phrasing against <strong>28 deterministic rules</strong> across five privacy domains. Every finding is anchored directly to verbatim text quotations with exact character offsets.
+                </p>
+              </div>
+              <div className="awaiting-compact-status">
+                <span className="status-pill status-pill-muted">
+                  <span className="status-dot" />
+                  Awaiting Input
+                </span>
+              </div>
             </div>
-            <div className="awaiting-compact-content">
-              <h3 id="preview-title" className="awaiting-compact-title">
-                Analysis Results &amp; Findings Dashboard
-              </h3>
-              <p className="awaiting-compact-desc">
-                Paste any privacy policy in the analyzer above and click <strong>&ldquo;Analyze Policy&rdquo;</strong> (or <strong>&ldquo;Load Sample Policy&rdquo;</strong>). Results will populate here with 28 automated checks, plain-language translations, and exact verbatim text citations.
-              </p>
+
+            {/* 5 Evaluated Privacy Domains Overview */}
+            <div className="pre-analysis-domains-strip" aria-label="Privacy Domains Evaluated">
+              {PRIVACY_DOMAINS_OVERVIEW.map((domain) => (
+                <div key={domain.id} className="pre-domain-pill">
+                  <div className="pre-domain-header">
+                    <span className="pre-domain-name">{domain.name}</span>
+                    <span className="pre-domain-count">{domain.rulesCount} Rules</span>
+                  </div>
+                  <p className="pre-domain-desc">{domain.scope}</p>
+                </div>
+              ))}
             </div>
-            <div className="awaiting-compact-status">
-              <span className="status-pill status-pill-muted">
-                <span className="status-dot" />
-                Awaiting Document Input
-              </span>
+
+            {/* Outcome Classifications Guide */}
+            <div className="pre-analysis-outcomes-guide">
+              <span className="outcomes-guide-title">Classification Semantics:</span>
+              <div className="outcomes-legend-row">
+                <span className="legend-item found">
+                  <span className="legend-badge">Disclosed</span>
+                  Clear affirmative practice identified with exact text evidence.
+                </span>
+                <span className="legend-item unclear">
+                  <span className="legend-badge">Ambiguous</span>
+                  Discretionary or qualifying clause (*&ldquo;as necessary&rdquo;*, *&ldquo;at our discretion&rdquo;*).
+                </span>
+                <span className="legend-item not-detected">
+                  <span className="legend-badge">Not Detected</span>
+                  No matching disclosure found under the 28 rules (not a guarantee of absence).
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -397,6 +465,20 @@ export function ReportPreview({ analysisReport, policyText, isStale, onReanalyze
             </ul>
           </div>
         )}
+
+        {/* Important Deterministic Limitation Notice */}
+        <div className="findings-limitation-banner no-print" role="note">
+          <div className="limitation-banner-icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="16" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12.01" y2="8" />
+            </svg>
+          </div>
+          <div className="limitation-banner-text">
+            <strong>Scope &amp; Limitation Note:</strong> &ldquo;Not Detected&rdquo; indicates that no matching statement was identified by the 28 rules in the submitted text. It does not certify that the organization never engages in that practice in physical operations.
+          </div>
+        </div>
 
         {/* Findings Command Bar: Search, Category Filters, Outcome Filters, View Mode Toggle */}
         <div className="findings-command-center no-print" role="region" aria-label="Findings Filters and Controls">
@@ -840,13 +922,16 @@ export function ReportPreview({ analysisReport, policyText, isStale, onReanalyze
                     🔒 Privacy &amp; Data Storage Disclosure
                   </h4>
                   <p style={{ margin: '0 0 0.5rem 0', color: 'var(--color-text-secondary)' }}>
-                    <strong>What will be stored:</strong> Report title, analysis creation date, summary outcome counts (Found: {foundCount}, Unclear: {unclearCount}), 28-rule disclosure findings, and brief evidence quotations.
+                    <strong>What will be stored:</strong> Report title, creation date, summary outcome counts (Found: {foundCount}, Unclear: {unclearCount}, Not Detected: {notDetectedCount}), 28-rule disclosure findings, and brief evidence quotations.
                   </p>
                   <p style={{ margin: '0 0 0.5rem 0', color: 'var(--color-text-secondary)' }}>
-                    <strong>What is NEVER stored:</strong> Full raw policy text is not saved. Your report is linked strictly to an anonymous browser client token. No other user can access or list your saved analyses.
+                    <strong>What is NEVER stored:</strong> Full raw policy text is not saved. Your report is linked strictly to an anonymous browser client token (hashed via SHA-256). No user profiles or tracking cookies are created.
+                  </p>
+                  <p style={{ margin: '0 0 0.5rem 0', color: 'var(--color-text-secondary)' }}>
+                    <strong>Access &amp; Storage Scope:</strong> Reports are scoped to your current browser&rsquo;s local session token. If you clear your browser site data or use private browsing mode, previously saved reports will no longer be accessible.
                   </p>
                   <p style={{ margin: 0, color: 'var(--color-text-muted)' }}>
-                    <strong>Your control:</strong> You can permanently delete this record from the database at any time from the Saved Reports section below.
+                    <strong>Permanent Deletion:</strong> You retain full control to permanently delete this report from the MongoDB database at any time from the Saved Reports section below.
                   </p>
                 </div>
 
