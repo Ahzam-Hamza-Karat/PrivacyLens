@@ -43,5 +43,15 @@ describe('PrivacyLens Backend API Test Suite', () => {
 
       assert.equal(response.headers['access-control-allow-origin'], 'http://localhost:5173');
     });
+
+    it('should include standard security defense-in-depth headers', async () => {
+      const response = await request(app)
+        .get('/api/health')
+        .expect(200);
+
+      assert.equal(response.headers['x-content-type-options'], 'nosniff');
+      assert.equal(response.headers['x-frame-options'], 'DENY');
+      assert.equal(response.headers['referrer-policy'], 'strict-origin-when-cross-origin');
+    });
   });
 });

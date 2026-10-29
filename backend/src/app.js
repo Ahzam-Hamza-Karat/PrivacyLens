@@ -7,12 +7,21 @@ import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
 
+// Secure HTTP response headers (Defense-in-depth)
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('X-XSS-Protection', '0');
+  next();
+});
+
 // Secure CORS configuration restricted to configured client origin
 app.use(
   cors({
     origin: config.clientOrigin,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Client-Token'],
     credentials: true,
   })
 );

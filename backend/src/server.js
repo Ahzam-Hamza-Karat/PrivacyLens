@@ -1,12 +1,25 @@
 import app from './app.js';
 import config from './config/index.js';
+import { connectToDatabase, closeDatabaseConnection } from './services/db/mongoClient.js';
 
 const { port, host } = config;
 
-const server = app.listen(port, host, () => {
+const server = app.listen(port, host, async () => {
   console.log(`[PrivacyLens Backend] Server running at http://${host}:${port}`);
   console.log(`[PrivacyLens Backend] Environment: ${config.env}`);
   console.log(`[PrivacyLens Backend] Health check endpoint: http://${host}:${port}/api/health`);
+
+  // Attempt initial database connection if configured
+  if (config.mongodbUri) {
+    const dbResult = await connectToDatabase();
+    if (dbResult.connected) {
+      console.log(`[PrivacyLens Backend] MongoDB connected successfully to database "${config.mongodbDbName}"`);
+    } else {
+      console.warn(`[PrivacyLens Backend] MongoDB connection notice: ${dbResult.error || 'Unavailable'}. Transient analysis remains active.`);
+    }
+  } else {
+    console.log('[PrivacyLens Backend] MongoDB URI unconfigured. Transient analysis active; persistence disabled.');
+  }
 });
 
 // Server error handling (e.g. port already in use)
@@ -28,8 +41,9 @@ server.on('error', (error) => {
 });
 
 // Graceful shutdown handling
-const handleGracefulShutdown = (signal) => {
-  console.log(`\n[PrivacyLens Backend] Received ${signal}. Closing HTTP server gracefully...`);
+const handleGracefulShutdown = async (signal) => {
+  console.log(`\n[PrivacyLens Backend] Received ${signal}. Closing HTTP server and database connections gracefully...`);
+  await closeDatabaseConnection();
   server.close(() => {
     console.log('[PrivacyLens Backend] HTTP server closed.');
     process.exit(0);

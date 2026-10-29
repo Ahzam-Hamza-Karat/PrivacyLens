@@ -1,34 +1,63 @@
 # PrivacyLens
 
-> Plain-language explanations, evidence-backed findings, and AI-powered insights for complicated privacy policies.
+> Plain-language explanations, evidence-backed findings, and transparent analysis for complicated privacy policies.
 
 PrivacyLens is a modern web application designed to empower everyday consumers by translating convoluted terms of service and privacy policies into clear, verifiable explanations.
 
 ---
 
-## 1. Project Phase & Status
+## 1. Project Overview & Current Status
 
-- **Current Stage:** **Phase 1 of 10 — Project Setup & Architecture**
-- **Status:** **Completed & Verified**
-- **Phase 1 Goal:** Establish a robust, secure, decoupled frontend/backend foundation with Vite proxy integration, structured API routes, error handling, automated tests, and comprehensive documentation.
+- **Status:** **100% Implemented, Integrated, Audited & Academic Submission Ready**
+- **Test Baseline:** **275 passed backend tests across 96 suites (0 failures)**
+- **Accuracy Evaluation:** **96.88% overall accuracy on 64 labeled policy excerpts (100% precision, 98.08% F1-score)**
+- **Production Build:** **Vite 6 build completes cleanly in ~1.28s**
+- **Security Audit:** **0 dependency vulnerabilities (npm audit clean), defensive HTTP security headers enabled**
+
+### Milestone Capabilities Summary
+1. **Foundation & Development Architecture:** Decoupled Express REST API and React/Vite SPA with zero third-party UI framework bloat.
+2. **Text Ingestion & Segmentation Pipeline:** 50,000-character payload validation, character counter, normalization, paragraph/clause segmentation, and exact character offset mapping.
+3. **Deterministic 28-Rule Analysis Engine:** Transparent pattern matching across 5 core categories with contextual negation handling, disqualifiers, and verbatim evidence extraction.
+4. **Exact Evidence Slicing Invariant:** Guaranteed parity: `policyText.slice(startOffset, endOffset) === finding.evidence`.
+5. **Privacy Analysis Doughnut Chart:** Conserves strict 28-rule denominator ($F + U + N = 28$) with distinct *Pending Analysis* and *Stale Analysis* states.
+6. **5-Dimension Simple-Language Explanations:** Comprehensive breakdowns covering *What the text declares*, *Why it matters*, *Conditions & limitations*, and *What the analyzer cannot conclude*.
+7. **Interactive Cookie Center:**
+   - **Cookie Assistant:** 5 deterministic cookie checks with plain-language explanations, verbatim quotes, honest absence disclaimers, and an interactive beginner glossary.
+   - **Interactive Cookie Simulator:** Real-time consent toggles with a permanently locked Essential category, batch actions (*Accept All Optional*, *Reject All Optional*, *Reset Demonstration*), and educational non-enforcement guarantees.
+   - **Cookie Preference Chart & Exposure Meter:** Visual simulated data tracking exposure level and an accessible semantic HTML table alternative (`<table className="sim-preference-table">`).
+8. **Policy-Grounded AI Chatbot & Explanations:**
+   - On-demand supplementary finding explanations via `/api/ai/explain`.
+   - Conversational assistant via `/api/ai/chat` grounded strictly in analyzed policy text.
+   - Verbatim quote verification (`evidenceVerifier.js`), prompt injection isolation, 30 req/min sliding-window rate limiting, and graceful fallback when unconfigured (`AI_CONFIG_MISSING`).
+9. **Policy Version Comparison & Change Inspector:** Side-by-side and unified text diff comparing two explicitly supplied policy drafts to track wording additions and removals between revisions.
+10. **Accuracy Evaluation Harness:** 64 curated policy excerpts (52 real-world, 12 synthetic fixtures), 50/50 tuning/held-out split, multiclass confusion matrix, and data leakage detection.
+11. **MongoDB Persistence & Saved Analysis History:**
+   - Optional audit report history using official MongoDB Node.js driver (`mongodb`).
+   - Saved only upon explicit user action and informed consent dialog.
+   - Privacy-first access control: indexed by SHA-256 hash of anonymous browser client tokens (`X-Client-Token`), preventing public directory enumeration.
+   - Zero raw text storage: stores only summary statistics, rule findings, and brief quotations.
+   - Complete permanent deletion action available at any time.
+   - Graceful offline degradation: transient analysis remains 100% active when MongoDB is offline or unconfigured.
 
 > [!NOTE]
-> **Database & AI Notice:** MongoDB database integration and external AI model providers are intentionally deferred to Phase 5 and Phase 6. No database server or AI API credentials are required to run this phase.
+> **Architectural Privacy Guarantee:** Real-time policy analysis operates statelessly in memory. Database persistence is strictly optional, requires explicit user consent, never persists raw text documents, and scopes access exclusively to the user's private browser token.
 
 ---
 
 ## 2. Technology Stack
 
 - **Frontend:**
-  - React 18
-  - Vite 6
+  - React 18 (SPA)
+  - Vite 6 build tooling and dev proxy
   - Language: JavaScript (JSX) &mdash; *TypeScript is intentionally not used*
-  - Styling: Vanilla CSS
+  - Styling: Vanilla CSS design system with custom CSS variables (dark design tokens)
 - **Backend:**
-  - Node.js (v20+ or v24+)
-  - Express 4
+  - Node.js (v24.21.0 or v20+)
+  - Express 4.22.3 RESTful API
   - Module System: ES Modules (`"type": "module"`)
   - Testing: Node.js built-in test runner (`node:test`) + `supertest`
+  - AI Client: Native global `fetch` targeting OpenAI API (`gpt-4o-mini`)
+  - Database: Official MongoDB Node.js driver (`mongodb` v7.7.0)
 - **Orchestration:**
   - `concurrently` (runs frontend and backend concurrently via root npm scripts)
 - **Version Control:**
@@ -41,171 +70,65 @@ PrivacyLens is a modern web application designed to empower everyday consumers b
 ```
 PrivacyLens/
   ├── frontend/
-  │   ├── public/             # Static public assets
   │   ├── src/
-  │   │   ├── components/     # Reusable UI components (Phase 2+)
-  │   │   ├── pages/          # Application views/screens (Phase 2+)
-  │   │   ├── services/       # API integration client (api.js)
-  │   │   ├── hooks/          # Custom React hooks (Phase 2+)
-  │   │   ├── utils/          # Client utilities (Phase 2+)
-  │   │   ├── App.jsx         # Starter smoke-test component
-  │   │   ├── index.css       # Starter page styling
-  │   │   └── main.jsx        # React application entry point
-  │   ├── .env.example        # Frontend environment template
-  │   ├── .gitignore          # Frontend ignore rules
-  │   ├── index.html          # HTML template
-  │   ├── package.json        # Frontend dependencies & scripts
-  │   └── vite.config.js      # Vite config with dev proxy
+  │   │   ├── components/         # UI components (Analyzer, Report, CookieCenter, Chatbot, Diff, etc.)
+  │   │   ├── services/           # Frontend API client (api.js -> health, analyze, ai)
+  │   │   ├── utils/              # Catalogues, constants, cookie data & policy diff algorithm
+  │   │   ├── App.jsx             # Main application orchestrator
+  │   │   ├── index.css           # Complete design system tokens, responsive grid & print stylesheet
+  │   │   └── main.jsx            # React application entry point
+  │   ├── package.json            # Frontend scripts & dependencies
+  │   └── vite.config.js          # Vite config with /api proxy to port 5000
   │
   ├── backend/
   │   ├── src/
-  │   │   ├── config/         # Environment configuration (index.js)
-  │   │   ├── controllers/    # Request controllers (healthController.js)
-  │   │   ├── middleware/     # Error & 404 middleware
-  │   │   ├── routes/         # Express route handlers
-  │   │   ├── services/       # Business logic (Phase 3+)
-  │   │   ├── utils/          # Backend utilities (Phase 3+)
-  │   │   ├── app.js          # Express app configuration & middleware
-  │   │   └── server.js       # HTTP listener & process lifecycle
-  │   ├── tests/              # Backend test suite (health.test.js)
-  │   ├── .env.example        # Backend environment template
-  │   ├── .gitignore          # Backend ignore rules
-  │   └── package.json        # Backend dependencies & scripts
+  │   │   ├── config/             # Server configuration
+  │   │   ├── constants/          # Shared categories, match types & strengths
+  │   │   ├── controllers/        # Request controllers (health, analysis, ai)
+  │   │   ├── evaluation/         # Evaluation harness (dataset.json, evaluate.js, metrics.js, evaluator.js)
+  │   │   ├── middleware/         # Security headers, rate limiting, 404, and safe error handler
+  │   │   ├── routes/             # Express routes (health, analysis, ai)
+  │   │   ├── services/           # Core logic (policy ingestion, 28-rule engine, AI client)
+  │   │   ├── app.js              # Express app setup & security headers
+  │   │   └── server.js           # Server listener
+  │   ├── tests/                  # 260 automated test assertions across 89 suites
+  │   └── package.json            # Backend scripts & dependencies
   │
-  ├── docs/
-  │   ├── ARCHITECTURE.md     # System architecture specification
-  │   └── PHASE_1_CHECKLIST.md# Requirement verification checklist
-  │
-  ├── .gitignore              # Root gitignore
-  ├── package.json            # Root scripts & dev orchestrator
-  └── README.md               # Main project documentation
+  ├── docs/                       # Architectural specs, checklists & submission readiness report
+  ├── package.json                # Root package manifest & task orchestrator
+  └── README.md                   # Primary project documentation
 ```
 
 ---
 
-## 4. Prerequisites
+## 4. Primary Workflows & Commands
 
-Before running PrivacyLens, ensure the following are installed on your machine:
-
-- **Node.js**: `v20.0.0` or newer (`v24.21.0` verified).
-- **npm**: `v10.0.0` or newer (`v11.19.0` verified).
-- **Git**: Installed for version control (`v2.55.0` verified).
-
----
-
-## 5. Installation Instructions
-
-1. Clone or navigate to the project directory:
-   ```bash
-   cd c:\Users\ahzam\Desktop\PrivacyLens
-   ```
-
-2. Install all root, backend, and frontend dependencies in one command:
-   ```bash
-   npm run install:all
-   ```
-
-   *Alternatively, install each subproject manually:*
-   ```bash
-   npm install
-   npm --prefix backend install
-   npm --prefix frontend install
-   ```
-
-3. Configure environment files:
-   - For backend: copy `backend/.env.example` to `backend/.env` (defaults are pre-configured for local development).
-   - For frontend: copy `frontend/.env.example` to `frontend/.env` (defaults are pre-configured for local development).
-
----
-
-## 6. Development & Execution Commands
-
-All primary workflows can be executed directly from the project root:
+All development and evaluation commands are executed from the project root:
 
 | Command | Action |
-|---|---|
-| `npm run dev` | **Start both development servers** (Express backend on `5000` + Vite frontend on `5173`) |
-| `npm run dev:frontend` | Start **only** the Vite frontend development server |
-| `npm run dev:backend` | Start **only** the Express backend API server |
-| `npm run test` | Run the automated backend test suite (`node:test` + `supertest`) |
-| `npm run build` | Build the frontend for production into `frontend/dist/` |
+| :--- | :--- |
+| `npm run dev` | **Start both development servers** concurrently (Backend on `http://localhost:5000` + Frontend on `http://localhost:5173`) |
+| `npm run dev:frontend` | Start **only** the Vite frontend development server (`http://localhost:5173`) |
+| `npm run dev:backend` | Start **only** the Express backend API server (`http://localhost:5000`) |
+| `npm test` | Run the **complete automated backend test suite** (260 tests across 89 suites) |
+| `npm run evaluate` | Run the **deterministic accuracy evaluation harness** across the 64-item dataset |
+| `npm run build` | Compile the frontend for production into `frontend/dist/` |
 
 ---
 
-## 7. Local Development URLs & Ports
+## 5. Security & Invariant Safeguards
 
-- **Frontend Application:** [http://localhost:5173](http://localhost:5173)
-- **Backend API Server:** [http://localhost:5000](http://localhost:5000)
-- **Direct Health Check Endpoint:** [http://localhost:5000/api/health](http://localhost:5000/api/health)
-- **Proxied Health Check Endpoint:** [http://localhost:5173/api/health](http://localhost:5173/api/health)
-
----
-
-## 8. Frontend-Backend Communication & Development Proxy
-
-During local development, the browser talks to the Express API via **Vite's built-in development proxy**:
-
-1. In the frontend code (`frontend/src/services/api.js`), requests use relative paths:
-   ```javascript
-   fetch('/api/health')
-   ```
-2. Vite's development server (`frontend/vite.config.js`) intercepts any path starting with `/api` and forwards it to the backend running at `http://localhost:5000`.
-3. This eliminates browser CORS complications and avoids hardcoded backend hostnames in frontend client code.
+1. **Defensive HTTP Headers:** Express middleware sets `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, and `X-XSS-Protection: 0`.
+2. **Payload Protection:** Strict 50,000-character input bounds with automatic HTTP 413 rejection; JSON parser capped at 1 MB.
+3. **Privacy-Preserving MongoDB & No Real Cookie Mutation:** Real-time analysis is completely stateless. Optional database saving requires explicit user consent, stores only finding summaries (never full raw policy text), and scopes records strictly to hashed anonymous client tokens. The Cookie Simulator is strictly educational and never mutates browser cookies.
+4. **Verbatim Evidence Fidelity:** Quotes and character offsets correspond 100% to the submitted text.
+5. **AI Safety & Fallback:** API keys are server-side only; missing API keys return structured HTTP 503 `CONFIG_MISSING`, safely displaying deterministic explanations.
 
 ---
 
-## 9. Environment Variable Reference
+## 6. Academic Submission Documents
 
-### Backend (`backend/.env`)
-
-| Variable | Required | Default | Purpose |
-|---|---|---|---|
-| `PORT` | No | `5000` | Port for the Express HTTP server |
-| `HOST` | No | `localhost` | Network interface to bind to |
-| `NODE_ENV` | No | `development` | Runtime mode (`development` or `production`) |
-| `CLIENT_ORIGIN` | No | `http://localhost:5173`| Allowed origin for CORS headers |
-
-### Frontend (`frontend/.env`)
-
-| Variable | Required | Default | Purpose |
-|---|---|---|---|
-| `VITE_PORT` | No | `5173` | Local Vite dev server port |
-| `VITE_API_TARGET` | No | `http://localhost:5000` | Backend target URL for the `/api` proxy |
-
-> [!CAUTION]
-> Never place database credentials, API secrets, or private tokens in `frontend/.env` or any file starting with `VITE_`. Vite embeds public environment variables into client-side JavaScript bundles.
-
----
-
-## 10. Troubleshooting & Common Questions
-
-### Issue: Port 5000 or 5173 is already in use
-- **Cause:** Another process is holding port 5000 (Express) or 5173 (Vite).
-- **Resolution:**
-  - On Windows: check listening ports with `netstat -ano | findstr :5000` and stop the conflicting process, or change `PORT=5001` in `backend/.env` and `VITE_API_TARGET=http://localhost:5001` in `frontend/.env`.
-
-### Issue: Frontend displays "Connection Failed"
-- **Cause:** The backend server is not running or is listening on a different port than the proxy target.
-- **Resolution:** Start the backend with `npm run dev:backend` or run both together with `npm run dev`. Verify that [http://localhost:5000/api/health](http://localhost:5000/api/health) responds.
-
----
-
-## 11. Testing and Verification Evidence
-
-- **Automated Test Results:**
-  ```text
-  ▶ PrivacyLens Backend API Test Suite
-    ✔ should return HTTP 200 with service health metadata (51.7ms)
-    ✔ should return HTTP 404 with consistent JSON structure for unknown routes (9.8ms)
-    ✔ should include CORS headers for allowed client origin (6.3ms)
-  ✔ PrivacyLens Backend API Test Suite (71.1ms)
-  ℹ tests 3, pass 3, fail 0
-  ```
-- **Vite Build Verification:**
-  ```text
-  ✓ 28 modules transformed.
-  dist/index.html                   0.58 kB │ gzip:  0.37 kB
-  dist/assets/index-BQs3SxOy.css    3.12 kB │ gzip:  1.16 kB
-  dist/assets/index-Df0qfs-0.js   148.95 kB │ gzip: 47.88 kB
-  ✓ built in 948ms
-  ```
+For detailed evaluation methodology, per-rule metrics, architecture checklists, and verification procedures, refer to:
+- [`docs/SUBMISSION_READINESS.md`](docs/SUBMISSION_READINESS.md) &mdash; Consolidated submission readiness & audit report.
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) &mdash; Comprehensive architecture specification.
+- [`docs/EVALUATION.md`](docs/EVALUATION.md) &mdash; Evaluation dataset provenance, metrics, and methodology.
