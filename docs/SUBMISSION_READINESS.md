@@ -87,6 +87,7 @@ PrivacyLens/
   ├── frontend/
   │   ├── src/
   │   │   ├── components/
+  │   │   │   ├── AuthModal.jsx               # Sign In & Create Account modal with validation
   │   │   │   ├── CookieAssistant.jsx         # Plain-language cookie analysis findings
   │   │   │   ├── CookieCenter.jsx            # Tabbed container for Assistant and Simulator
   │   │   │   ├── CookiePreferenceChart.jsx   # Visual exposure meter & accessible HTML table
@@ -280,11 +281,11 @@ Ambiguity Shifts:       0 (expected 'unclear' vs detected)
 
 ## 8. Verification & Test Commands
 
-### 1. Run Complete Automated Test Suite (260 Tests)
+### 1. Run Complete Automated Test Suite (275 Tests)
 ```bash
 npm test
 ```
-*Result: 260 tests passed across 89 test suites in ~850 ms (0 failures).*
+*Result: 275 tests passed across 96 test suites in ~1.45 s (0 failures).*
 
 ### 2. Run Accuracy Evaluation Harness
 ```bash
@@ -296,7 +297,7 @@ npm run evaluate
 ```bash
 npm run build
 ```
-*Result: Vite production build succeeded in 1.00s, generating clean bundles.*
+*Result: Vite production build succeeded in 1.28s, generating clean bundles.*
 
 ### 4. Run Development Servers
 ```bash
@@ -310,19 +311,21 @@ npm run dev
 
 | Step | Action | Expected Observed Behavior |
 | :---: | :--- | :--- |
-| **1** | Open `http://localhost:5173` | Dark-themed application loads with Hero, Trust Section, and empty Policy Analyzer. |
-| **2** | Check API Status Card | Status indicator reports API Healthy (`v1.0.0`) and AI status (Configured or Graceful Fallback). |
-| **3** | Click "Load Sample Policy" | Textarea populates with 4,210-character sample policy. Character counter updates. |
-| **4** | Click "Analyze Policy Text" | Smooth-scrolls to Live Findings Report. Doughnut chart renders 28-rule distribution. |
-| **5** | Inspect Findings Citations | Each finding card displays paragraph/clause ID, character offsets, and verbatim quotes. |
-| **6** | Test AI Finding Explanation | Click "Explain with AI" on a finding. Structured supplementary explanation or deterministic fallback appears. |
-| **7** | Navigate to Cookie Center | Click "Cookie Assistant" in Navbar. Inspect 5 cookie disclosure cards and Beginner Glossary. |
-| **8** | Switch to Cookie Simulator | Click "Interactive Cookie Simulator" tab. Essential cookies are locked. Optional toggles change exposure meter. |
-| **9** | Test Simulator Batch Actions | Click "Accept All Optional" (all active, Full Exposure); click "Reject All Optional" (Minimal Exposure). |
-| **10**| Inspect Simulator Matrix Table | Screen-reader accessible matrix table displays real-time consent states and simulated impacts. |
-| **11**| Test Version Comparison | Navigate to `#version-diff`. Click "Load Sample Comparison", then "Compare Versions". View added/removed clauses. |
-| **12**| Test Stale Context Invalidation | Edit a word in the analyzer textarea. Stale alert banner appears; chatbot and cookie tools prompt re-analysis. |
-| **13**| Test Print View | Click "Print Report / Save as PDF". Print stylesheet cleanly isolates findings report across pages. |
+| **1** | Open `http://localhost:5173` | Dark-themed application loads with header (Sign In, Create Account), Hero, and empty Policy Analyzer. |
+| **2** | Click "Sign In" | Opens polished Sign In modal with email/password inputs, validation, and transparent backend scope notice. |
+| **3** | Click "Create Account" | Opens Create Account modal with name, email, password match validation, and terms checkbox. |
+| **4** | Check API Status Card | Status indicator reports API Healthy (`v1.0.0`) and AI status (Configured or Graceful Fallback). |
+| **5** | Click "Load Sample Policy" | Textarea populates with 3,128-character sample policy. Character counter updates. |
+| **6** | Click "Analyze Policy Text" | Smooth-scrolls to Live Findings Report. Doughnut chart renders 28-rule distribution. |
+| **7** | Inspect Findings Citations | Each finding card displays category tag, plain-language title, quote, and expandable technical details. |
+| **8** | Test AI Finding Explanation | Click "Explain with AI" on a finding. Structured supplementary explanation or deterministic fallback appears. |
+| **9** | Navigate to Cookie Center | Click "Cookie Center" in Navbar. Inspect 5 cookie disclosure cards and Beginner Glossary. |
+| **10**| Switch to Cookie Simulator | Click "Interactive Cookie Simulator" tab. Essential cookies are locked. Optional toggles change exposure meter. |
+| **11**| Test Simulator Batch Actions | Click "Accept All Optional" (all active, Full Exposure); click "Reject All Optional" (Minimal Exposure). |
+| **12**| Inspect Simulator Matrix Table | Screen-reader accessible matrix table displays real-time consent states and simulated impacts. |
+| **13**| Test Version Comparison | Navigate to `#version-diff`. Click "Load Sample Comparison", then "Compare Versions". View added/removed clauses. |
+| **14**| Test Stale Context Invalidation | Edit a word in the analyzer textarea. Stale alert banner appears; chatbot and cookie tools prompt re-analysis. |
+| **15**| Test Print View | Click "Print Report / Save as PDF". Print stylesheet cleanly isolates findings report across pages. |
 
 ---
 
@@ -330,8 +333,8 @@ npm run dev
 
 All core views plus responsive viewport layouts have been verified and captured directly from the live running application via headless Chrome DevTools Protocol automation at Desktop (1440 × 900), Laptop (1366 × 768), Tablet (768 × 1024), and Mobile (375 × 812). Image assets are stored in [`docs/screenshots/`](file:///c:/Users/ahzam/Desktop/PrivacyLens/docs/screenshots):
 
-- [x] **Screenshot 1: Landing Page & Redesigned Hero** &mdash; Consumer-focused hero ("Understand the privacy policies you agree to"), streamlined navigation bar with dropdown features, and prominent primary CTA.  
-  *Asset:* [`docs/screenshots/01_hero_and_navigation.png`](file:///c:/Users/ahzam/Desktop/PrivacyLens/docs/screenshots/01_hero_and_navigation.png) (300.1 KB)
+- [x] **Screenshot 1: Landing Page & Redesigned Header** &mdash; Consumer-focused hero, VirusTotal-inspired navigation bar with Sign In and Create Account actions.  
+  *Asset:* [`docs/screenshots/01_hero_and_navigation.png`](file:///c:/Users/ahzam/Desktop/PrivacyLens/docs/screenshots/01_hero_and_navigation.png) (292.8 KB)
 - [x] **Screenshot 1b: Clause Inspector Showcase Switcher** &mdash; Interactive clause switcher demonstrating highlighted evidence, plain-language translation, and verified direct quotes.  
   *Asset:* [`docs/screenshots/01b_clause_showcase_selection.png`](file:///c:/Users/ahzam/Desktop/PrivacyLens/docs/screenshots/01b_clause_showcase_selection.png) (299.7 KB)
 - [x] **Screenshot 2: System Architecture & Service Health** &mdash; 3-card diagnostic panel monitoring Backend REST API, AI Provider configuration, and MongoDB Persistence status.  
@@ -366,10 +369,20 @@ All core views plus responsive viewport layouts have been verified and captured 
   *Asset:* [`docs/screenshots/15_saved_reports_section.png`](file:///c:/Users/ahzam/Desktop/PrivacyLens/docs/screenshots/15_saved_reports_section.png) (89.8 KB)
 - [x] **Screenshot 16: Save Analysis Modal** &mdash; Informed consent modal detailing data storage parameters with mandatory confirmation checkbox.  
   *Asset:* [`docs/screenshots/16_save_analysis_modal.png`](file:///c:/Users/ahzam/Desktop/PrivacyLens/docs/screenshots/16_save_analysis_modal.png) (128.8 KB)
-- [x] **Responsive Check 1: Laptop Viewport (1366 × 768)** &mdash; Standard laptop screen rendering.  
-  *Asset:* [`docs/screenshots/responsive_laptop_view.png`](file:///c:/Users/ahzam/Desktop/PrivacyLens/docs/screenshots/responsive_laptop_view.png) (268.1 KB)
+- [x] **Screenshot 17: Sign In Modal** &mdash; Accessible dialog with email/password inputs, remember me, and show/hide password toggle.  
+  *Asset:* [`docs/screenshots/17_auth_modal_signin.png`](file:///c:/Users/ahzam/Desktop/PrivacyLens/docs/screenshots/17_auth_modal_signin.png) (107.3 KB)
+- [x] **Screenshot 18: Create Account Modal** &mdash; Account creation dialogue with password strength and confirmation matching.  
+  *Asset:* [`docs/screenshots/18_auth_modal_signup.png`](file:///c:/Users/ahzam/Desktop/PrivacyLens/docs/screenshots/18_auth_modal_signup.png) (107.2 KB)
+- [x] **Screenshot 19: Form Validation Error States** &mdash; Inline accessible alerts for invalid email format and minimum password length.  
+  *Asset:* [`docs/screenshots/19_auth_modal_validation_errors.png`](file:///c:/Users/ahzam/Desktop/PrivacyLens/docs/screenshots/19_auth_modal_validation_errors.png) (104.8 KB)
+- [x] **Screenshot 20: Backend Auth Scope Disclosure** &mdash; Transparent status banner explaining anonymous client-token isolation and pending auth service.  
+  *Asset:* [`docs/screenshots/20_auth_modal_backend_notice.png`](file:///c:/Users/ahzam/Desktop/PrivacyLens/docs/screenshots/20_auth_modal_backend_notice.png) (113.3 KB)
+- [x] **Screenshot 21: Mobile Drawer with Auth Actions** &mdash; Mobile phone drawer displaying Sign In and Create Account buttons prominently alongside navigation items.  
+  *Asset:* [`docs/screenshots/21_mobile_auth_drawer.png`](file:///c:/Users/ahzam/Desktop/PrivacyLens/docs/screenshots/21_mobile_auth_drawer.png) (109.5 KB)
+- [x] **Responsive Check 1: Laptop Viewport (1366 × 768)** &mdash; Standard laptop screen rendering with VirusTotal-inspired navigation.  
+  *Asset:* [`docs/screenshots/responsive_laptop_view.png`](file:///c:/Users/ahzam/Desktop/PrivacyLens/docs/screenshots/responsive_laptop_view.png) (271.8 KB)
 - [x] **Responsive Check 2: Tablet Viewport (768 × 1024)** &mdash; Portrait tablet layout with single-column adaptation.  
   *Asset:* [`docs/screenshots/responsive_tablet_view.png`](file:///c:/Users/ahzam/Desktop/PrivacyLens/docs/screenshots/responsive_tablet_view.png) (195.7 KB)
 - [x] **Responsive Check 3: Mobile Viewport (375 × 812)** &mdash; Mobile phone viewport with drawer menu and responsive cards.  
-  *Asset:* [`docs/screenshots/responsive_mobile_view.png`](file:///c:/Users/ahzam/Desktop/PrivacyLens/docs/screenshots/responsive_mobile_view.png) (87.9 KB)
+  *Asset:* [`docs/screenshots/responsive_mobile_view.png`](file:///c:/Users/ahzam/Desktop/PrivacyLens/docs/screenshots/responsive_mobile_view.png) (109.5 KB)
 

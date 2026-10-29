@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { checkBackendHealth } from '../services/api';
 
 /**
- * Professional Consumer-Facing Navigation Bar
- * Features clean brand identity, prioritized user journeys (Analyze, My Reports, Features, How It Works),
- * a single prominent primary CTA button, and an accessible responsive mobile drawer.
+ * Professional Consumer-Facing Navigation Bar (VirusTotal-inspired layout)
+ * Left: PrivacyLens branding
+ * Center: Analyze, My Reports, Features dropdown, How It Works
+ * Right: Sign In, Create Account, Mobile menu toggle
  */
-export function Navbar({ onNavigateToAnalyzer }) {
+export function Navbar({ onNavigateToAnalyzer, onOpenSignIn, onOpenSignUp }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [featuresDropdownOpen, setFeaturesDropdownOpen] = useState(false);
   const [apiHealthy, setApiHealthy] = useState(null);
@@ -53,7 +54,7 @@ export function Navbar({ onNavigateToAnalyzer }) {
       <header className="site-header" role="banner">
         <div className="app-container">
           <div className="header-content">
-            {/* Brand Logo & Name */}
+            {/* Left: Brand Logo & Name */}
             <a href="#" className="brand-link" aria-label="PrivacyLens Home">
               <div className="brand-icon-wrapper" aria-hidden="true">
                 <svg
@@ -74,12 +75,17 @@ export function Navbar({ onNavigateToAnalyzer }) {
               <span className="brand-name">PrivacyLens</span>
             </a>
 
-            {/* Desktop Navigation Links */}
+            {/* Center: Desktop Navigation Links */}
             <nav className="nav-desktop" aria-label="Main Navigation">
-              <a href="#analyzer" className="nav-link" onClick={handleAnalyzerClick}>
+              <a
+                href="#analyzer"
+                className="nav-link nav-link-active"
+                onClick={handleAnalyzerClick}
+                id="nav-link-analyze"
+              >
                 Analyze
               </a>
-              <a href="#saved-reports" className="nav-link">
+              <a href="#saved-reports" className="nav-link" id="nav-link-reports">
                 My Reports
               </a>
 
@@ -144,34 +150,35 @@ export function Navbar({ onNavigateToAnalyzer }) {
                 )}
               </div>
 
-              <a href="#how-it-works" className="nav-link">
+              <a href="#how-it-works" className="nav-link" id="nav-link-how-it-works">
                 How It Works
               </a>
             </nav>
 
-            {/* Quick Actions & Primary CTA */}
+            {/* Right: Authentication Actions & Mobile Toggle */}
             <div className="header-actions">
               <button
                 type="button"
-                className="btn btn-primary nav-cta-btn"
-                onClick={handleAnalyzerClick}
-                id="nav-btn-analyze"
+                className="btn btn-ghost nav-auth-btn"
+                id="nav-btn-signin"
+                onClick={() => {
+                  closeMobileMenu();
+                  if (onOpenSignIn) onOpenSignIn();
+                }}
               >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <circle cx="11" cy="11" r="8" />
-                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                </svg>
-                <span>Analyze a Policy</span>
+                Sign In
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-primary nav-auth-btn nav-auth-btn-signup"
+                id="nav-btn-create-account"
+                onClick={() => {
+                  closeMobileMenu();
+                  if (onOpenSignUp) onOpenSignUp();
+                }}
+              >
+                Create Account
               </button>
 
               <button
@@ -200,6 +207,32 @@ export function Navbar({ onNavigateToAnalyzer }) {
           {/* Accessible Mobile Menu Drawer */}
           {mobileMenuOpen && (
             <nav className="mobile-menu-drawer" aria-label="Mobile Navigation">
+              {/* Mobile Auth Actions */}
+              <div className="mobile-auth-block">
+                <button
+                  type="button"
+                  className="btn btn-secondary btn-block"
+                  onClick={() => {
+                    closeMobileMenu();
+                    if (onOpenSignIn) onOpenSignIn();
+                  }}
+                >
+                  Sign In
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary btn-block"
+                  onClick={() => {
+                    closeMobileMenu();
+                    if (onOpenSignUp) onOpenSignUp();
+                  }}
+                >
+                  Create Account
+                </button>
+              </div>
+
+              <div className="mobile-nav-divider" />
+
               <a href="#analyzer" className="mobile-nav-link" onClick={handleAnalyzerClick}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <circle cx="11" cy="11" r="8" />

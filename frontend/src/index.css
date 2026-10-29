@@ -4279,14 +4279,14 @@ body {
    HERO SECTION & INTERACTIVE CLAUSE SHOWCASE (SPACIOUS & INVITING)
    ========================================================================== */
 .hero-section {
-  padding: 5rem 0 4rem;
+  padding: 3rem 0 2rem;
   position: relative;
 }
 
 .hero-header-block {
   text-align: center;
-  max-width: 900px;
-  margin: 0 auto 3.5rem;
+  max-width: 860px;
+  margin: 0 auto 2.25rem;
 }
 
 .hero-pill-badge {
@@ -5833,3 +5833,294 @@ body {
   gap: 1.25rem;
   margin-bottom: 2rem;
 }
+
+/* ==========================================================================
+   VirusTotal-Inspired Header & Authentication Styles
+   ========================================================================== */
+
+.nav-auth-btn {
+  font-size: 0.85rem;
+  padding: 0.45rem 0.95rem;
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  transition: all 0.15s ease-in-out;
+}
+
+#nav-btn-signin {
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+#nav-btn-signin:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-auth-btn-signup {
+  background: #06b6d4 !important;
+  color: #041019 !important;
+  font-weight: 600 !important;
+  border: 1px solid transparent !important;
+}
+
+.nav-auth-btn-signup:hover {
+  background: #22d3ee !important;
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.35);
+}
+
+.mobile-auth-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 0.5rem 0;
+}
+
+.mobile-nav-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 0.5rem 0;
+}
+
+/* ==========================================================================
+   Sign In & Create Account Modal Dialog
+   ========================================================================== */
+
+.auth-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 8, 18, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: fadeIn 0.18s ease-out;
+}
+
+.auth-modal-dialog {
+  width: 100%;
+  max-width: 460px;
+  background: #0b1329;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(15, 23, 42, 0.6);
+}
+
+.auth-tabs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.auth-tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.4rem 0.85rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.auth-tab-btn:hover {
+  color: var(--color-text-primary);
+}
+
+.auth-tab-btn.active {
+  color: #06b6d4;
+  background: rgba(6, 182, 212, 0.12);
+}
+
+.auth-modal-close {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.auth-modal-close:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.auth-modal-body {
+  padding: 1.5rem;
+}
+
+.auth-header-copy {
+  margin-bottom: 1.25rem;
+}
+
+.auth-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 0.35rem 0;
+  letter-spacing: -0.01em;
+}
+
+.auth-subtitle {
+  font-size: 0.825rem;
+  color: var(--color-text-muted);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.auth-notice-banner {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: rgba(6, 182, 212, 0.08);
+  border: 1px solid rgba(6, 182, 212, 0.25);
+  border-radius: 8px;
+  margin-bottom: 1.25rem;
+  animation: fadeIn 0.15s ease-out;
+}
+
+.notice-icon-wrapper {
+  color: #06b6d4;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.notice-content {
+  font-size: 0.775rem;
+  line-height: 1.45;
+  color: #a5f3fc;
+}
+
+.notice-title {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+
+.notice-text {
+  margin: 0;
+  color: #cffafe;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.95rem;
+}
+
+.form-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.35rem;
+}
+
+.form-label-row .form-label {
+  margin-bottom: 0;
+}
+
+.auth-text-link {
+  background: transparent;
+  border: none;
+  color: #38bdf8;
+  font-size: 0.775rem;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: none;
+}
+
+.auth-text-link:hover {
+  text-decoration: underline;
+  color: #7dd3fc;
+}
+
+.auth-text-link-strong {
+  background: transparent;
+  border: none;
+  color: #06b6d4;
+  font-weight: 600;
+  font-size: 0.825rem;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: none;
+}
+
+.auth-text-link-strong:hover {
+  text-decoration: underline;
+  color: #22d3ee;
+}
+
+.form-options-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.terms-checkbox {
+  align-items: flex-start;
+  font-size: 0.775rem;
+  line-height: 1.4;
+  color: var(--color-text-muted);
+}
+
+.terms-checkbox input {
+  margin-top: 0.15rem;
+}
+
+.auth-submit-btn {
+  margin-top: 0.5rem;
+  padding: 0.7rem;
+  font-weight: 600;
+}
+
+.btn-loading-flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.auth-modal-footer {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: center;
+}
+
+.auth-footer-text {
+  font-size: 0.825rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+

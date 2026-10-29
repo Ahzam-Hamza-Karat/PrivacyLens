@@ -9,14 +9,15 @@ import PolicyChatbot from './components/PolicyChatbot';
 import PolicyComparison from './components/PolicyComparison';
 import HowItWorks from './components/HowItWorks';
 import DiagnosticCard from './components/DiagnosticCard';
+import AuthModal from './components/AuthModal';
 import Footer from './components/Footer';
 import { SAMPLE_POLICY } from './utils/constants';
 import { analyzePolicy } from './services/api';
 
 /**
  * Main PrivacyLens Application
- * Assembles navigation, hero, trust banner, policy analyzer workspace,
- * live analysis findings report, chat placeholder, methodology breakdown, API diagnostics, and footer.
+ * Assembles navigation, hero, policy analyzer workspace, live analysis findings report,
+ * saved history, cookie intelligence, comparison diff, policy chatbot, diagnostics, and auth modal.
  */
 export function App() {
   const [policyText, setPolicyText] = useState('');
@@ -25,6 +26,9 @@ export function App() {
   const [analysisError, setAnalysisError] = useState(null);
   const [isStaleReport, setIsStaleReport] = useState(false);
   const [refreshSavedTrigger, setRefreshSavedTrigger] = useState(0);
+
+  // Authentication Modal State
+  const [authModal, setAuthModal] = useState({ isOpen: false, mode: 'signin' });
 
   const analyzerTextareaRef = useRef(null);
 
@@ -36,6 +40,18 @@ export function App() {
     if (analyzerTextareaRef.current) {
       analyzerTextareaRef.current.focus();
     }
+  };
+
+  const handleOpenSignIn = () => {
+    setAuthModal({ isOpen: true, mode: 'signin' });
+  };
+
+  const handleOpenSignUp = () => {
+    setAuthModal({ isOpen: true, mode: 'signup' });
+  };
+
+  const handleCloseAuth = () => {
+    setAuthModal((prev) => ({ ...prev, isOpen: false }));
   };
 
   const handleTextChange = (newText) => {
@@ -109,7 +125,11 @@ export function App() {
 
   return (
     <>
-      <Navbar onNavigateToAnalyzer={handleStartAnalyzing} />
+      <Navbar
+        onNavigateToAnalyzer={handleStartAnalyzing}
+        onOpenSignIn={handleOpenSignIn}
+        onOpenSignUp={handleOpenSignUp}
+      />
 
       <main id="main-content">
         <Hero
@@ -162,6 +182,13 @@ export function App() {
       </main>
 
       <Footer />
+
+      {/* Sign In & Create Account Modal */}
+      <AuthModal
+        isOpen={authModal.isOpen}
+        initialMode={authModal.mode}
+        onClose={handleCloseAuth}
+      />
     </>
   );
 }
