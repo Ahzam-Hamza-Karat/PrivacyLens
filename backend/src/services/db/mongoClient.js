@@ -47,9 +47,10 @@ export async function connectToDatabase(uri = config.mongodbUri) {
     dbInstance = client.db(config.mongodbDbName || 'privacylens');
     isConnected = true;
 
-    // Ensure appropriate indexes exist on saved_analyses collection
+    // Ensure appropriate indexes exist on saved_reports collection
     try {
-      const collection = dbInstance.collection('saved_analyses');
+      const collectionName = config.mongodbCollectionName || 'saved_reports';
+      const collection = dbInstance.collection(collectionName);
       await collection.createIndex({ clientTokenHash: 1, createdAt: -1 });
     } catch (idxErr) {
       console.warn('MongoDB index creation notice:', idxErr.message);
@@ -96,6 +97,7 @@ export function getDbStatus() {
     connected: isDbConnected(),
     configured,
     databaseName: config.mongodbDbName || 'privacylens',
+    collectionName: config.mongodbCollectionName || 'saved_reports',
   };
 }
 

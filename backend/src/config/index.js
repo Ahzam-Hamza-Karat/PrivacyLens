@@ -22,6 +22,7 @@ export const config = {
   // MongoDB Database Configuration (Backend Only)
   mongodbUri: process.env.MONGODB_URI || '',
   mongodbDbName: process.env.MONGODB_DB_NAME || 'privacylens',
+  mongodbCollectionName: process.env.MONGODB_COLLECTION_NAME || 'saved_reports',
   mongodbConnectTimeoutMs: parseInt(process.env.MONGODB_CONNECT_TIMEOUT_MS, 10) || 5000,
 };
 

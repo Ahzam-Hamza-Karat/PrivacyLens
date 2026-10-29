@@ -1,5 +1,6 @@
 import crypto from 'node:crypto';
 import { ObjectId } from 'mongodb';
+import config from '../config/index.js';
 import { getDb, isDbConnected, getDbStatus } from '../services/db/mongoClient.js';
 
 /**
@@ -21,6 +22,15 @@ function hashClientToken(token) {
  */
 function isValidObjectId(id) {
   return typeof id === 'string' && /^[0-9a-fA-F]{24}$/.test(id);
+}
+
+/**
+ * Resolves the configured MongoDB collection name for saved reports.
+ * Defaults to 'saved_reports' to match database specification.
+ * @returns {string}
+ */
+function getCollectionName() {
+  return config.mongodbCollectionName || 'saved_reports';
 }
 
 /**
@@ -136,7 +146,7 @@ export const saveAnalysis = async (req, res, next) => {
     };
 
     const db = getDb();
-    const result = await db.collection('saved_analyses').insertOne(docToInsert);
+    const result = await db.collection(getCollectionName()).insertOne(docToInsert);
 
     return res.status(201).json({
       success: true,
@@ -183,7 +193,7 @@ export const listSavedAnalyses = async (req, res, next) => {
 
     const db = getDb();
     const cursor = db
-      .collection('saved_analyses')
+      .collection(getCollectionName())
       .find({ clientTokenHash })
       .project({
         _id: 1,
@@ -254,7 +264,7 @@ export const getSavedAnalysisById = async (req, res, next) => {
     }
 
     const db = getDb();
-    const doc = await db.collection('saved_analyses').findOne({
+    const doc = await db.collection(getCollectionName()).findOne({
       _id: new ObjectId(id),
       clientTokenHash,
     });
@@ -325,7 +335,7 @@ export const deleteSavedAnalysis = async (req, res, next) => {
     }
 
     const db = getDb();
-    const result = await db.collection('saved_analyses').deleteOne({
+    const result = await db.collection(getCollectionName()).deleteOne({
       _id: new ObjectId(id),
       clientTokenHash,
     });

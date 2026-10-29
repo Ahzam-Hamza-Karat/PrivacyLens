@@ -91,7 +91,7 @@ describe('MongoDB Persistence & Saved Analyses Test Suite', () => {
     mockCollection = createMockCollection();
     mockDb = {
       collection(name) {
-        if (name === 'saved_analyses') return mockCollection;
+        if (name === 'saved_reports' || name === 'saved_analyses') return mockCollection;
         throw new Error(`Unexpected collection name: ${name}`);
       },
     };

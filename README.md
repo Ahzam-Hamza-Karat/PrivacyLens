@@ -110,13 +110,60 @@ All development and evaluation commands are executed from the project root:
 | `npm run dev` | **Start both development servers** concurrently (Backend on `http://localhost:5000` + Frontend on `http://localhost:5173`) |
 | `npm run dev:frontend` | Start **only** the Vite frontend development server (`http://localhost:5173`) |
 | `npm run dev:backend` | Start **only** the Express backend API server (`http://localhost:5000`) |
-| `npm test` | Run the **complete automated backend test suite** (260 tests across 89 suites) |
+| `npm test` | Run the **complete automated backend test suite** (275 tests across 96 suites) |
 | `npm run evaluate` | Run the **deterministic accuracy evaluation harness** across the 64-item dataset |
 | `npm run build` | Compile the frontend for production into `frontend/dist/` |
 
 ---
 
-## 5. Security & Invariant Safeguards
+## 5. Local MongoDB Setup & Persistence Verification
+
+PrivacyLens supports persistence of saved privacy analysis reports to a local MongoDB Community Server instance with explicit user consent and privacy-preserving SHA-256 client token scoping.
+
+### Verified Local Configuration
+
+| Configuration Key | Value | Purpose |
+| :--- | :--- | :--- |
+| **Local MongoDB URI** | `mongodb://127.0.0.1:27017` | Direct IPv4 loopback connection to local MongoDB Community Server |
+| **Target Database** | `privacylens` | Dedicated application database |
+| **Target Collection** | `saved_reports` | Dedicated collection for user-consented audit reports |
+| **MongoDB Compass** | Connects to `mongodb://127.0.0.1:27017` | GUI inspection of database documents |
+| **Port** | `27017` (default MongoDB port) | Standard local service listener |
+
+### Setting Up Environment Variables
+
+Configure `backend/.env` with the local MongoDB settings:
+
+```ini
+PORT=5000
+HOST=localhost
+NODE_ENV=development
+CLIENT_ORIGIN=http://localhost:5173
+
+# Local MongoDB Community Server Configuration
+MONGODB_URI=mongodb://127.0.0.1:27017
+MONGODB_DB_NAME=privacylens
+MONGODB_COLLECTION_NAME=saved_reports
+MONGODB_CONNECT_TIMEOUT_MS=5000
+```
+
+### Persistence & Access Control Guarantees
+
+1. **Explicit Consent Invariant:** Analysis reports are never saved automatically. Saving requires an explicit POST payload containing `consentGiven: true`. Requests with missing or false consent are rejected with HTTP 400 `CONSENT_REQUIRED`.
+2. **Anonymous SHA-256 Client-Token Scoping:** Each browser session generates an anonymous client token sent via the `X-Client-Token` HTTP header. The backend stores only the SHA-256 hash (`clientTokenHash`). Raw tokens are never stored, and users can only list, view, or delete reports matching their own hashed token.
+3. **Restart Persistence:** Reports stored in the `saved_reports` collection persist across backend server restarts, node crashes, and browser reloads.
+4. **Permanent Deletion:** Users retain full control to permanently delete any saved report via `DELETE /api/saved-analyses/:id`.
+5. **Zero Full-Text Retention:** To maintain user privacy, saved documents store only structured finding metadata, category counts, and short quotes &mdash; never the full text of submitted policies.
+6. **Graceful Offline Degradation:** If MongoDB is offline or disconnected, all real-time in-memory policy analysis, cookie checks, and AI explanations remain 100% operational; only report persistence is temporarily disabled with HTTP 503 `DATABASE_UNAVAILABLE`.
+
+### Verification Endpoints
+
+- `GET http://localhost:5000/api/health` &mdash; Returns database connection status and collection metadata.
+- `GET http://localhost:5000/api/saved-analyses/status` &mdash; Returns sanitized connection status without exposing sensitive credentials.
+
+---
+
+## 6. Security & Invariant Safeguards
 
 1. **Defensive HTTP Headers:** Express middleware sets `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, and `X-XSS-Protection: 0`.
 2. **Payload Protection:** Strict 50,000-character input bounds with automatic HTTP 413 rejection; JSON parser capped at 1 MB.
@@ -126,7 +173,7 @@ All development and evaluation commands are executed from the project root:
 
 ---
 
-## 6. Academic Submission Documents
+## 7. Academic Submission Documents
 
 For detailed evaluation methodology, per-rule metrics, architecture checklists, and verification procedures, refer to:
 - [`docs/SUBMISSION_READINESS.md`](docs/SUBMISSION_READINESS.md) &mdash; Consolidated submission readiness & audit report.
