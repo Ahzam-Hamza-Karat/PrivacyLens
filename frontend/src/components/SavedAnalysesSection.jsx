@@ -157,8 +157,11 @@ export function SavedAnalysesSection({ onLoadSavedReport, refreshTrigger }) {
             Saved Analysis Reports
           </h2>
           <p className="section-subtitle">
-            Review, inspect, or reload analysis reports you have saved to database history. Records are private to your browser session with permanent deletion control.
+            Review, inspect, or reload analysis reports you have saved to database history. Records are scoped strictly to an anonymous cryptographic token stored in your browser session, with full deletion control.
           </p>
+          <div className="token-storage-notice" style={{ marginTop: 'var(--space-2)', fontSize: '0.85rem', color: 'var(--color-text-secondary)', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: 'var(--space-2) var(--space-3)', maxWidth: '720px' }}>
+            🔒 <strong>Client-Token Scoping:</strong> Reports are associated with an anonymous identifier in your browser&rsquo;s <code>localStorage</code> rather than a user account. If you clear your browser site data or browse in incognito mode, a new token is generated and previously saved reports will no longer be accessible.
+          </div>
         </div>
 
         {/* Database Status Ribbon & Disclosure */}

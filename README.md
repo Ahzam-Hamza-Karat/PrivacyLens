@@ -112,6 +112,7 @@ All development and evaluation commands are executed from the project root:
 | `npm run dev:backend` | Start **only** the Express backend API server (`http://localhost:5000`) |
 | `npm test` | Run the **complete automated backend test suite** (275 tests across 96 suites) |
 | `npm run evaluate` | Run the **deterministic accuracy evaluation harness** across the 64-item dataset |
+| `npm run verify:mongodb` | Run the **live MongoDB verification suite** against the running local Community Server |
 | `npm run build` | Compile the frontend for production into `frontend/dist/` |
 
 ---
@@ -156,10 +157,38 @@ MONGODB_CONNECT_TIMEOUT_MS=5000
 5. **Zero Full-Text Retention:** To maintain user privacy, saved documents store only structured finding metadata, category counts, and short quotes &mdash; never the full text of submitted policies.
 6. **Graceful Offline Degradation:** If MongoDB is offline or disconnected, all real-time in-memory policy analysis, cookie checks, and AI explanations remain 100% operational; only report persistence is temporarily disabled with HTTP 503 `DATABASE_UNAVAILABLE`.
 
-### Verification Endpoints
+### Verification Endpoints & Commands
 
+- `npm run verify:mongodb` &mdash; Official automated test against your live local MongoDB Community Server.
 - `GET http://localhost:5000/api/health` &mdash; Returns database connection status and collection metadata.
 - `GET http://localhost:5000/api/saved-analyses/status` &mdash; Returns sanitized connection status without exposing sensitive credentials.
+
+### Step-by-Step Local Setup & Execution Guide
+
+1. **Verify MongoDB Service:** Ensure MongoDB Community Server is running on your machine:
+   ```powershell
+   Get-Service -Name "*mongo*"
+   # If stopped: net start MongoDB
+   ```
+2. **Configure Backend Environment:**
+   Copy `backend/.env.example` to `backend/.env` (if not already done). The default configuration points to `mongodb://127.0.0.1:27017` with database `privacylens` and collection `saved_reports`.
+3. **Start the Application:**
+   From the repository root, run:
+   ```bash
+   npm run dev
+   ```
+   This concurrently launches the Express API server on `http://localhost:5000` and the Vite React application on `http://localhost:5173`.
+4. **Inspect in MongoDB Compass:**
+   Open MongoDB Compass and connect to `mongodb://127.0.0.1:27017`. Select the `privacylens` database and `saved_reports` collection to visually inspect persisted records.
+5. **Troubleshooting:**
+   - *Database Offline Pill*: If the UI shows "Database Offline / Unconfigured", check that MongoDB service is running and listening on port 27017 (`netstat -ano | findstr 27017`).
+   - *Port Conflict*: If port 5000 or 5173 is already in use, stop the existing node process or update the port in `backend/.env` and `frontend/vite.config.js`.
+
+### Known Project Limitations (Academic Scope)
+
+1. **User Authentication:** The Sign In and Create Account modal forms are intentionally **UI-only demonstrations** with client-side field validation. No server-side user tables, session cookies, or password hashes are maintained; PrivacyLens operates entirely in privacy-preserving anonymous mode.
+2. **Client-Token Scoping:** Reports in MongoDB are scoped to an anonymous UUID stored in browser `localStorage`. If you clear your browser cookies and site storage or use Private/Incognito windows, a new token is created and past reports cannot be retrieved.
+3. **Transient Analysis Invariant:** Analysis operates entirely in-memory. Full raw policy text is **never** saved to MongoDB, ensuring zero compliance risk for submitted proprietary policies.
 
 ---
 
