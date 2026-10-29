@@ -257,6 +257,11 @@ The MongoDB persistence layer provides optional analysis report history with str
 
 ### 2.4 MongoDB Document Schema & Privacy Architecture
 
+- **Database:** `privacylens`
+- **Collection:** `saved_reports`
+- **Local URI:** `mongodb://127.0.0.1:27017`
+- **Driver:** Official MongoDB Node.js Driver (`mongodb` v7.7+)
+
 ```javascript
 {
   _id: ObjectId("..."),
