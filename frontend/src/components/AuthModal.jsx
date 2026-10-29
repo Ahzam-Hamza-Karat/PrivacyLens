@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 
 /**
  * Authentication Modal Component
- * Provides polished, accessible Sign In and Create Account dialogues inspired by modern product standards.
- * Enforces client-side validation, accessible keyboard navigation, and transparent disclosure that
- * backend account management is pending server-side authentication service deployment.
+ * Provides polished, accessible Sign In and Create Account dialogues.
+ * Features stacked labels, full-width dark navy inputs, real-time client validation,
+ * and transparent disclosure that backend authentication is not yet implemented.
  *
  * @param {{
  *   isOpen: boolean,
@@ -77,13 +77,13 @@ export function AuthModal({ isOpen, initialMode = 'signin', onClose }) {
 
     if (mode === 'signup') {
       if (!fullName.trim()) {
-        newErrors.fullName = 'Please enter your full name or display handle.';
+        newErrors.fullName = 'Please enter your full name.';
       }
       if (password !== confirmPassword) {
         newErrors.confirmPassword = 'Passwords do not match.';
       }
       if (!agreeTerms) {
-        newErrors.agreeTerms = 'You must acknowledge the educational terms to proceed.';
+        newErrors.agreeTerms = 'You must acknowledge the educational scope to proceed.';
       }
     }
 
@@ -98,14 +98,14 @@ export function AuthModal({ isOpen, initialMode = 'signin', onClose }) {
     setIsSubmitting(true);
     setSubmissionNotice(null);
 
-    // Simulate standard network round-trip while truthfully reporting backend status
+    // Validate inputs locally without storing credentials
     setTimeout(() => {
       setIsSubmitting(false);
       setSubmissionNotice({
         type: 'info',
-        title: mode === 'signin' ? 'Validation Succeeded — Backend Notice' : 'Account Details Validated — Backend Notice',
+        title: 'Account Service Notice (Backend Under Construction)',
         message:
-          'Frontend form validation passed. The PrivacyLens backend is currently configured for anonymous client-token isolation (zero password hoarding). A persistent user authentication service (with salted bcrypt/Argon2 hashing & JWT sessions) is planned for the next multi-user release. Your inputs were validated locally and were NOT stored in localStorage or transmitted over the network.',
+          'Frontend form validation passed. Server-side user accounts, password hashing (bcrypt), and session tokens are not yet implemented on the backend. PrivacyLens operates entirely in privacy-preserving anonymous mode. Your inputs were validated in-browser and were NOT stored or transmitted.',
       });
     }, 450);
   };
@@ -173,12 +173,12 @@ export function AuthModal({ isOpen, initialMode = 'signin', onClose }) {
         <div className="auth-modal-body">
           <div className="auth-header-copy">
             <h2 id="auth-modal-title" className="auth-title">
-              {mode === 'signin' ? 'Welcome back to PrivacyLens' : 'Create your PrivacyLens account'}
+              {mode === 'signin' ? 'Sign In to PrivacyLens' : 'Create an Account'}
             </h2>
             <p className="auth-subtitle">
               {mode === 'signin'
-                ? 'Sign in to access your saved policy reports, cookie simulations, and custom bookmarks.'
-                : 'Get started with plain-language privacy analysis, report history, and comparative tracking.'}
+                ? 'User accounts are currently under development. You can preview the interface and test input validation below.'
+                : 'Account registration will be supported in an upcoming release. You can test form validation criteria below.'}
             </p>
           </div>
 
@@ -295,13 +295,6 @@ export function AuthModal({ isOpen, initialMode = 'signin', onClose }) {
                   />
                   <span>Remember this device</span>
                 </label>
-                <button
-                  type="button"
-                  className="auth-text-link"
-                  onClick={() => alert('Password reset service will be available with user authentication backend.')}
-                >
-                  Forgot password?
-                </button>
               </div>
             ) : (
               <div className="form-options-row">
@@ -312,7 +305,7 @@ export function AuthModal({ isOpen, initialMode = 'signin', onClose }) {
                     onChange={(e) => setAgreeTerms(e.target.checked)}
                   />
                   <span>
-                    I understand that PrivacyLens is an informational tool and agree to the Terms of Service.
+                    I understand that PrivacyLens is an informational educational tool.
                   </span>
                 </label>
                 {errors.agreeTerms && <p className="form-error" role="alert">{errors.agreeTerms}</p>}

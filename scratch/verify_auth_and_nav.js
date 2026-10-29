@@ -89,7 +89,7 @@ async function setViewport(cdp, width, height) {
 }
 
 async function run() {
-  console.log('--- Verifying VirusTotal Redesign, Navigation & Authentication Modals ---');
+  console.log('--- Verifying VirusTotal UI Polish, Authentication Modals & Empty States ---');
 
   if (!fs.existsSync(SCREENSHOT_DIR)) {
     fs.mkdirSync(SCREENSHOT_DIR, { recursive: true });
@@ -136,15 +136,23 @@ async function run() {
     await wait(300);
     await captureScreenshot(cdp, path.join(SCREENSHOT_DIR, '01_hero_and_navigation.png'));
 
-    // 2. Click "Sign In" button to open modal
+    // 2. Capture Empty Workspace & Compact Empty Results State
+    console.log('Capturing empty workspace & compact results state...');
+    await cdp.send('Runtime.evaluate', {
+      expression: `document.getElementById('analyzer').scrollIntoView();`,
+    });
+    await wait(400);
+    await captureScreenshot(cdp, path.join(SCREENSHOT_DIR, '03_workspace_empty.png'));
+
+    // 3. Click "Sign In" button to open modal
     console.log('Opening Sign In modal...');
     await cdp.send('Runtime.evaluate', {
-      expression: `document.getElementById('nav-btn-signin').click()`,
+      expression: `window.scrollTo(0, 0); document.getElementById('nav-btn-signin').click();`,
     });
     await wait(400);
     await captureScreenshot(cdp, path.join(SCREENSHOT_DIR, '17_auth_modal_signin.png'));
 
-    // 3. Trigger validation error by submitting empty form
+    // 4. Trigger validation error by submitting empty form
     console.log('Triggering form validation...');
     await cdp.send('Runtime.evaluate', {
       expression: `document.getElementById('btn-submit-signin').click()`,
@@ -152,7 +160,7 @@ async function run() {
     await wait(300);
     await captureScreenshot(cdp, path.join(SCREENSHOT_DIR, '19_auth_modal_validation_errors.png'));
 
-    // 4. Fill in valid credentials and submit to see backend scope notice
+    // 5. Fill in valid credentials and submit to see backend scope notice
     console.log('Submitting credentials to display backend notice...');
     await cdp.send('Runtime.evaluate', {
       expression: `
@@ -169,7 +177,7 @@ async function run() {
     await wait(700);
     await captureScreenshot(cdp, path.join(SCREENSHOT_DIR, '20_auth_modal_backend_notice.png'));
 
-    // 5. Switch to Create Account mode
+    // 6. Switch to Create Account mode
     console.log('Switching to Create Account tab...');
     await cdp.send('Runtime.evaluate', {
       expression: `document.getElementById('tab-signup').click()`,
@@ -177,24 +185,68 @@ async function run() {
     await wait(300);
     await captureScreenshot(cdp, path.join(SCREENSHOT_DIR, '18_auth_modal_signup.png'));
 
-    // 6. Close Modal
+    // 7. Close Modal
     await cdp.send('Runtime.evaluate', {
       expression: `document.querySelector('.auth-modal-close').click()`,
     });
     await wait(300);
 
-    // 7. Verify Mobile Viewport & Drawer with Auth Buttons
+    // 8. Load Sample Policy
+    console.log('Loading sample policy into analyzer...');
+    await cdp.send('Runtime.evaluate', {
+      expression: `document.getElementById('btn-load-sample').click();`,
+    });
+    await wait(400);
+    await captureScreenshot(cdp, path.join(SCREENSHOT_DIR, '04_workspace_sample_loaded.png'));
+
+    // 9. Run Analysis
+    console.log('Executing deterministic analysis...');
+    await cdp.send('Runtime.evaluate', {
+      expression: `document.getElementById('btn-analyze-policy').click();`,
+    });
+    await wait(1200);
+
+    // 10. Capture Results Dashboard with 4-card ribbon, findings, and doughnut chart
+    console.log('Capturing completed results dashboard...');
+    await cdp.send('Runtime.evaluate', {
+      expression: `document.getElementById('preview').scrollIntoView();`,
+    });
+    await wait(400);
+    await captureScreenshot(cdp, path.join(SCREENSHOT_DIR, '07_report_preview_and_findings.png'));
+    await captureScreenshot(cdp, path.join(SCREENSHOT_DIR, '05_doughnut_distribution_chart.png'));
+
+    // 11. Switch to Dense Table View
+    console.log('Capturing dense table view...');
+    await cdp.send('Runtime.evaluate', {
+      expression: `
+        const tableBtn = document.getElementById('btn-view-table');
+        if (tableBtn) tableBtn.click();
+      `,
+    });
+    await wait(400);
+    await captureScreenshot(cdp, path.join(SCREENSHOT_DIR, '07b_dense_audit_table_view.png'));
+
+    // 12. Switch back to cards view
+    await cdp.send('Runtime.evaluate', {
+      expression: `
+        const cardsBtn = document.getElementById('btn-view-cards');
+        if (cardsBtn) cardsBtn.click();
+      `,
+    });
+    await wait(300);
+
+    // 13. Verify Mobile Viewport & Drawer with Auth Buttons
     console.log('Verifying mobile drawer with auth actions...');
     await setViewport(cdp, 375, 812);
     await wait(300);
     await cdp.send('Runtime.evaluate', {
-      expression: `document.querySelector('.mobile-menu-toggle').click()`,
+      expression: `window.scrollTo(0, 0); document.querySelector('.mobile-menu-toggle').click();`,
     });
     await wait(400);
     await captureScreenshot(cdp, path.join(SCREENSHOT_DIR, '21_mobile_auth_drawer.png'));
     await captureScreenshot(cdp, path.join(SCREENSHOT_DIR, 'responsive_mobile_view.png'));
 
-    // 8. Restore Desktop View and capture laptop
+    // 14. Restore Desktop View and capture laptop
     await setViewport(cdp, 1366, 768);
     await cdp.send('Runtime.evaluate', {
       expression: `window.scrollTo(0, 0);`,

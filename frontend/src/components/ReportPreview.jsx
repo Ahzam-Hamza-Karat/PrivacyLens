@@ -121,42 +121,33 @@ export function ReportPreview({ analysisReport, policyText, isStale, onReanalyze
     }
   };
 
-  // State 1: Awaiting Document Analysis
+  // State 1: Awaiting Document Analysis (Clean Compact Empty State)
   if (!analysisReport) {
     return (
       <section id="preview" className="content-section" aria-labelledby="preview-title">
         <div className="app-container">
-          <div className="section-header">
-            <div className="section-step-indicator">
-              <span className="step-number">02</span>
-              <span className="step-label">FINDINGS INTELLIGENCE</span>
-            </div>
-            <h2 id="preview-title" className="section-title">
-              Analysis Results &amp; Findings Dashboard
-            </h2>
-            <p className="section-subtitle">
-              Paste a policy agreement in the workspace above and click <strong>&ldquo;Run Deterministic Analysis&rdquo;</strong> to inspect data collection, sharing, cookies, retention, and statutory rights.
-            </p>
-          </div>
-
-          <div className="awaiting-analysis-card">
-            <div className="awaiting-icon-wrapper" aria-hidden="true">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <div className="awaiting-analysis-compact-card">
+            <div className="awaiting-compact-icon" aria-hidden="true">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="11" cy="11" r="8" />
                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
                 <line x1="11" y1="8" x2="11" y2="14" />
                 <line x1="8" y1="11" x2="14" y2="11" />
               </svg>
             </div>
-            <h3 className="awaiting-title">No Document Analyzed Yet</h3>
-            <p className="awaiting-desc">
-              Your results dashboard will populate here with 28 deterministic checks, verbatim offset quotations,
-              and 5-dimension plain-language explanations once analysis is triggered.
-            </p>
-
-            {/* Doughnut Chart in Pending State */}
-            <div className="awaiting-doughnut-preview">
-              <PrivacyAnalysisDoughnutChart findings={[]} hasAnalyzed={false} />
+            <div className="awaiting-compact-content">
+              <h3 id="preview-title" className="awaiting-compact-title">
+                Analysis Results &amp; Findings Dashboard
+              </h3>
+              <p className="awaiting-compact-desc">
+                Paste any privacy policy in the analyzer above and click <strong>&ldquo;Analyze Policy&rdquo;</strong> (or <strong>&ldquo;Load Sample Policy&rdquo;</strong>). Results will populate here with 28 automated checks, plain-language translations, and exact verbatim text citations.
+              </p>
+            </div>
+            <div className="awaiting-compact-status">
+              <span className="status-pill status-pill-muted">
+                <span className="status-dot" />
+                Awaiting Document Input
+              </span>
             </div>
           </div>
         </div>

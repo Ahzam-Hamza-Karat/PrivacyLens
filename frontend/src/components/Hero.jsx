@@ -200,9 +200,9 @@ export function Hero({ onStartAnalyzing, onLoadSample }) {
           </div>
         </div>
 
-        {/* Capability Overview: 6 Core User Benefits */}
+        {/* Capability Overview: 6 Core User Benefits (Clickable Navigation Cards) */}
         <div className="capabilities-bento-grid" role="region" aria-label="Key Features & Capabilities">
-          <div className="bento-card">
+          <a href="#analyzer" className="bento-card bento-card-link">
             <div className="bento-icon-wrapper" aria-hidden="true">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
@@ -210,11 +210,11 @@ export function Hero({ onStartAnalyzing, onLoadSample }) {
             </div>
             <h3 className="bento-title">5-Domain Policy Analysis</h3>
             <p className="bento-text">
-              Examines personal data collection, third-party sharing, tracking cookies, retention commitments, and statutory consumer rights.
+              Examines personal data collection, sharing, tracking cookies, retention, and statutory consumer rights.
             </p>
-          </div>
+          </a>
 
-          <div className="bento-card">
+          <a href="#analyzer" className="bento-card bento-card-link">
             <div className="bento-icon-wrapper" aria-hidden="true">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <polyline points="20 6 9 17 4 12" />
@@ -222,11 +222,11 @@ export function Hero({ onStartAnalyzing, onLoadSample }) {
             </div>
             <h3 className="bento-title">Exact Verbatim Evidence</h3>
             <p className="bento-text">
-              Every finding is anchored directly to the exact sentence in the original document, ensuring trustworthy, verifiable citations.
+              Every finding is anchored directly to the exact sentence in the original text, ensuring verifiable citations.
             </p>
-          </div>
+          </a>
 
-          <div className="bento-card">
+          <a href="#cookie-center" className="bento-card bento-card-link">
             <div className="bento-icon-wrapper" aria-hidden="true">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="10" />
@@ -235,11 +235,11 @@ export function Hero({ onStartAnalyzing, onLoadSample }) {
             </div>
             <h3 className="bento-title">Cookie Center &amp; Simulator</h3>
             <p className="bento-text">
-              Understand tracking technologies and explore an educational consent simulator with real-time exposure feedback.
+              Understand tracking technologies and explore an interactive consent simulator with real-time feedback.
             </p>
-          </div>
+          </a>
 
-          <div className="bento-card">
+          <a href="#version-diff" className="bento-card bento-card-link">
             <div className="bento-icon-wrapper" aria-hidden="true">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <line x1="18" y1="20" x2="18" y2="10" />
@@ -249,11 +249,11 @@ export function Hero({ onStartAnalyzing, onLoadSample }) {
             </div>
             <h3 className="bento-title">Policy Version Comparison</h3>
             <p className="bento-text">
-              Compare two privacy policy drafts side by side to see what clauses were added, removed, or rewritten between revisions.
+              Compare two privacy policy drafts side by side to see what clauses were added, removed, or changed.
             </p>
-          </div>
+          </a>
 
-          <div className="bento-card">
+          <a href="#chatbot" className="bento-card bento-card-link">
             <div className="bento-icon-wrapper" aria-hidden="true">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
@@ -261,11 +261,11 @@ export function Hero({ onStartAnalyzing, onLoadSample }) {
             </div>
             <h3 className="bento-title">Policy Q&amp;A Assistant</h3>
             <p className="bento-text">
-              Ask natural-language questions about the analyzed agreement with answers grounded strictly in the original policy text.
+              Ask natural-language questions about the analyzed agreement with answers grounded in the policy text.
             </p>
-          </div>
+          </a>
 
-          <div className="bento-card">
+          <a href="#saved-reports" className="bento-card bento-card-link">
             <div className="bento-icon-wrapper" aria-hidden="true">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
@@ -273,9 +273,9 @@ export function Hero({ onStartAnalyzing, onLoadSample }) {
             </div>
             <h3 className="bento-title">Private Saved Reports</h3>
             <p className="bento-text">
-              Save analysis snapshots to your personal history with explicit consent. Accessible only from your browser with full deletion control.
+              Save analysis snapshots to MongoDB with consent. Scoped to your browser with permanent deletion control.
             </p>
-          </div>
+          </a>
         </div>
 
         {/* Consumer Trust & Educational Scope Banner */}
